@@ -79,7 +79,19 @@ public class LevelMaster : MonoBehaviour
 
     public GameObject navPointerPrefab; //寻路图标prefab
 
-    GameObject navPointer;//寻路终点图标
+    private GameObject _navPointer;
+
+    GameObject navPointer
+    {
+        get
+        {
+            var result= _navPointer;
+            if (result == null)
+                result=Instantiate(navPointerPrefab);
+            return result;
+        }
+        set { _navPointer = value; }
+    } //寻路终点图标}
 
     public ETCJoystick m_Joystick;
 
@@ -259,7 +271,7 @@ public class LevelMaster : MonoBehaviour
     private void UpdateMobileControllerUI()
     {
         m_Joystick.gameObject.SetActive(IsMobilePlatform());
-        m_TouchPad.gameObject.SetActive(!IsMobilePlatform());
+        m_TouchPad.gameObject.SetActive(IsMobilePlatform());
         
         //战斗中移动按钮隐藏
         if (BattleManager.Instance.IsInBattle)
