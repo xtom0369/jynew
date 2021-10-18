@@ -31,6 +31,7 @@ public partial class ShopUIPanel:Jyx2_UIBase
     protected override void OnCreate()
     {
         InitTrans();
+        IsBlockControl = true;
         childMgr = GameUtil.GetOrAddComponent<ChildGoComponent>(ItemRoot_RectTransform);
         childMgr.Init(ScrollItem_RectTransform, (trans) => 
         {
@@ -44,6 +45,13 @@ public partial class ShopUIPanel:Jyx2_UIBase
 
         BindListener(CloseBtn_Button, OnCloseClick);
         BindListener(ConfirmBtn_Button, OnConfirmClick);
+    }
+
+    int GetHasNum(int id)
+    {
+        if (!GameRuntimeData.Instance.ShopItems.ContainsKey(id.ToString()))
+            return 0;
+        return GameRuntimeData.Instance.ShopItems[id.ToString()];
     }
 
     int GetHasBuyNum(int id) 
@@ -99,7 +107,8 @@ public partial class ShopUIPanel:Jyx2_UIBase
             Jyx2ShopItem data = curShopData.ShopItems[i];
             ShopUIItem uiItem = trans.GetComponent<ShopUIItem>();
             int currentNum = GetHasBuyNum(data.Id);
-            uiItem.Refresh(data,i,currentNum);
+            var hasNum = GetHasNum(data.Id);
+            uiItem.Refresh(data, i, hasNum, currentNum);
             uiItem.SetSelect(curSelectIndex == i);
             if (curSelectIndex == i)
                 curSelectItem = uiItem;
@@ -156,6 +165,7 @@ public partial class ShopUIPanel:Jyx2_UIBase
             return;
         }
         GameRuntimeData.Instance.AddItem(item.Id, count);
+        GameRuntimeData.Instance.ShopItems[item.Id.ToString()] = count;
         AddBuyCount(item.Id, count);
         GameUtil.DisplayPopinfo($"购买{itemCfg.Name},数量{count}");
         GameRuntimeData.Instance.AddItem(GameConst.MONEY_ID, -moneyCost);
