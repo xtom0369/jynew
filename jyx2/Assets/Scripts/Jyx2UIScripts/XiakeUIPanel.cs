@@ -281,20 +281,14 @@ public partial class XiakeUIPanel : Jyx2_UIBase
                 var item = ConfigTable.Get<Jyx2Item>(itemId);
                 if (m_currentRole.Xiulianwupin == itemId)
                 {
+                    m_currentRole.UnequipItem(m_currentRole.GetXiulianItem());
                     m_currentRole.Xiulianwupin = -1;
-                    item.User = -1;
                 }
                 else
                 {
-                    if (m_currentRole.GetXiulianItem() != null)
-                    {
-                        m_currentRole.GetXiulianItem().User = -1;
-                    }
+                    m_currentRole.UnequipItem(m_currentRole.GetXiulianItem());
                     m_currentRole.Xiulianwupin = itemId;
-                    while (m_currentRole.CanFinishedItem())
-                    {
-                        m_currentRole.UseItem(m_currentRole.GetXiulianItem());
-                    }
+                    m_currentRole.UseItem(m_currentRole.GetXiulianItem());
                     item.User = m_currentRole.GetJyx2RoleId();
                 }
             },
